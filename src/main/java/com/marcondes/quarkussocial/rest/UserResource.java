@@ -1,6 +1,8 @@
 package com.marcondes.quarkussocial.rest;
 
+import com.marcondes.quarkussocial.rest.domain.model.User;
 import com.marcondes.quarkussocial.rest.dto.CreateUserRequest;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -11,9 +13,15 @@ import jakarta.ws.rs.core.Response;
 public class UserResource {
 
     @POST
+    @Transactional
     public Response createUser(CreateUserRequest userRequest){
-        return Response.ok(userRequest).build();
+        User user = new User();
+        user.setAge(userRequest.getAge());
+        user.setName(userRequest.getName());
 
+        user.persist();
+
+        return Response.ok(user).build();
     }
 
     @GET
