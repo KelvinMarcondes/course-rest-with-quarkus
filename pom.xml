@@ -67,6 +67,11 @@
       <artifactId>quarkus-resteasy-jsonb</artifactId>
       <version>3.2.1.Final</version>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+      <version>3.2.2.Final</version>
+    </dependency>
 
   </dependencies>
   <build>

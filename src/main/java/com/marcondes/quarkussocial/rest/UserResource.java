@@ -18,7 +18,7 @@ public class UserResource {
 
     @GET
     public Response listAllUsers(CreateUserRequest userRequest){
-        return Response.ok(userRequest).build();
+        return Response.ok().build();
 
     }
 }
