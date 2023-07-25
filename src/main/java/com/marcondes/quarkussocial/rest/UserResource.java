@@ -2,6 +2,7 @@ package com.marcondes.quarkussocial.rest;
 
 import com.marcondes.quarkussocial.rest.domain.model.User;
 import com.marcondes.quarkussocial.rest.dto.CreateUserRequest;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -18,15 +19,38 @@ public class UserResource {
         User user = new User();
         user.setAge(userRequest.getAge());
         user.setName(userRequest.getName());
-
         user.persist();
-
         return Response.ok(user).build();
     }
 
     @GET
-    public Response listAllUsers(CreateUserRequest userRequest){
-        return Response.ok().build();
+    public Response listAllUsers(){
+        PanacheQuery<User> query = User.findAll();
+        return Response.ok(query.list()).build();
+    }
 
+    @DELETE
+    @Path("{id}")
+    @Transactional
+    public Response deleteUser(@PathParam("id") Long id){
+        User user = User.findById(id);
+        if(user != null) {
+            user.delete();
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @PUT
+    @Path("{id}")
+    @Transactional
+    public Response updateUser(@PathParam("id") Long id, CreateUserRequest userData){
+        User user = User.findById(id);
+        if(user != null) {
+            user.setName(userData.getName());
+            user.setAge(userData.getAge());
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 }
