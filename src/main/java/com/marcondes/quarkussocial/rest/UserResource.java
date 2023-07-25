@@ -1,8 +1,10 @@
 package com.marcondes.quarkussocial.rest;
 
 import com.marcondes.quarkussocial.rest.domain.model.User;
+import com.marcondes.quarkussocial.rest.domain.repository.UserRepository;
 import com.marcondes.quarkussocial.rest.dto.CreateUserRequest;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -13,19 +15,25 @@ import jakarta.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
 
+    private final UserRepository repository;
+    @Inject
+    public UserResource(UserRepository repository) {
+        this.repository = repository;
+    }
+
     @POST
     @Transactional
     public Response createUser(CreateUserRequest userRequest){
         User user = new User();
         user.setAge(userRequest.getAge());
         user.setName(userRequest.getName());
-        user.persist();
+        repository.persist(user);
         return Response.ok(user).build();
     }
 
     @GET
     public Response listAllUsers(){
-        PanacheQuery<User> query = User.findAll();
+        PanacheQuery<User> query = repository.findAll();
         return Response.ok(query.list()).build();
     }
 
@@ -33,9 +41,9 @@ public class UserResource {
     @Path("{id}")
     @Transactional
     public Response deleteUser(@PathParam("id") Long id){
-        User user = User.findById(id);
+        User user = repository.findById(id);
         if(user != null) {
-            user.delete();
+            repository.delete(user);
             return Response.ok().build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -45,7 +53,7 @@ public class UserResource {
     @Path("{id}")
     @Transactional
     public Response updateUser(@PathParam("id") Long id, CreateUserRequest userData){
-        User user = User.findById(id);
+        User user = repository.findById(id);
         if(user != null) {
             user.setName(userData.getName());
             user.setAge(userData.getAge());
