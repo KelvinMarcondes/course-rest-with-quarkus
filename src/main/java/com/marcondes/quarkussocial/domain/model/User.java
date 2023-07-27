@@ -1,6 +1,5 @@
-package com.marcondes.quarkussocial.rest.domain.model;
+package com.marcondes.quarkussocial.domain.model;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 import java.util.Objects;

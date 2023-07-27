@@ -1,4 +1,4 @@
-package com.marcondes.quarkussocial.rest.dto;
+package com.marcondes.quarkussocial.domain.rest.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,8 +1,8 @@
-package com.marcondes.quarkussocial.rest;
+package com.marcondes.quarkussocial.domain.rest;
 
-import com.marcondes.quarkussocial.rest.domain.model.User;
-import com.marcondes.quarkussocial.rest.domain.repository.UserRepository;
-import com.marcondes.quarkussocial.rest.dto.CreateUserRequest;
+import com.marcondes.quarkussocial.domain.model.User;
+import com.marcondes.quarkussocial.UserRepository;
+import com.marcondes.quarkussocial.domain.rest.dto.CreateUserRequest;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
