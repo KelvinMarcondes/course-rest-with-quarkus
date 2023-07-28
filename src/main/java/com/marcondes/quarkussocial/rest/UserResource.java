@@ -1,11 +1,14 @@
-package com.marcondes.quarkussocial.domain.rest;
+package com.marcondes.quarkussocial.rest;
 
 import com.marcondes.quarkussocial.domain.model.User;
-import com.marcondes.quarkussocial.UserRepository;
-import com.marcondes.quarkussocial.domain.rest.dto.CreateUserRequest;
+
+import com.marcondes.quarkussocial.domain.repository.UserRepository;
+import com.marcondes.quarkussocial.rest.dto.CreateUserRequest;
+import com.marcondes.quarkussocial.rest.dto.ResponseError;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.*;
@@ -33,16 +36,16 @@ public class UserResource {
     public Response createUser(CreateUserRequest userRequest){
 
         Set<ConstraintViolation<CreateUserRequest>> violations = validator.validate(userRequest);
-        if (!violations.isEmpty())
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(violations.stream().findAny().get().getMessage()).build();
-
+        if (!violations.isEmpty()){
+            ResponseError responseError = ResponseError.createFromValidation(violations);
+            return Response.status(Response.Status.BAD_REQUEST).entity(responseError).build();
+        }
 
         User user = new User();
         user.setAge(userRequest.getAge());
         user.setName(userRequest.getName());
         repository.persist(user);
-        return Response.ok(user).build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @GET
@@ -58,7 +61,7 @@ public class UserResource {
         User user = repository.findById(id);
         if(user != null) {
             repository.delete(user);
-            return Response.ok().build();
+            return Response.status(Response.Status.NO_CONTENT).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -71,7 +74,7 @@ public class UserResource {
         if(user != null) {
             user.setName(userData.getName());
             user.setAge(userData.getAge());
-            return Response.ok().build();
+            return Response.status(Response.Status.NO_CONTENT).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
