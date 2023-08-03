@@ -58,7 +58,7 @@ public class PostResource {
                 "user", Sort.by("dateTime", Sort.Direction.Descending), user);
 
         var postResponseList = query.list().stream().map(
-                post -> PostResponse.fromEntity(post)).collect(Collectors.toList());
+                PostResponse::fromEntity).collect(Collectors.toList());
 
         return Response.ok(postResponseList).build();
     }
